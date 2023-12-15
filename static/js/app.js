@@ -1,35 +1,34 @@
-// Assign URL to constant
-const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
+ // Assign URL to constant
+ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
-//Create sample selector
-let dropdown = d3.select("#selDataset");
+ // Create sample selector
+ let dropdown = d3.select("#selDataset");
 
-//use D3 ibrary to read in samples.json from the URL
-d3.json(url).then(data => {
-    //log on console for verification
-    console.log(data);
+ // Use D3 library to read in samples.json from the URL
+ d3.json(url).then(data => {
+     // Log on console for verification
+     console.log(data);
 
-    //Iterate through JSON to collect each sample's data
-    for (let i = 0; i < data["names"].length; i++) {
-        let id = data["names"][i];
-        dropdown
-            .append("option")
-            .text(id)
-            .attr("value", id);
-        }
-        // set the value to HTML
-        d3.select("option").property("selected", true);
+     // Iterate through JSON to collect each sample's data
+     for (let i = 0; i < data["names"].length; i++) {
+         let id = data["names"][i];
+         dropdown
+             .append("option")
+             .text(id)
+             .attr("value", id);
+     }
 
-        // define the variable to hold the sample id #
-        id = dropdown.property('value')
-        //log on console for verification
-        console.log(id)
-    
-        // make the variable change when the dropdown menu changes
-        dropdown.on("click", () => {
-            let id = dropdown.property("value");
-            //log on console for verification
-            console.log(id);
+     // Set the default selected value to the first option
+     d3.select("option").property("selected", true);
+
+     // Define a function to handle dropdown change
+     function handleDropdownChange() {
+         // Get the selected value
+         let id = dropdown.property("value");
+
+         // Log on console for verification
+         console.log("Selected ID:", id);
+
     
             // define the variables to hold data for charts
             let sampleData = data["samples"].filter(item => (item["id"] === id))[0];
@@ -185,5 +184,9 @@ d3.json(url).then(data => {
             };
             //Plot
             Plotly.newPlot("gauge", [gaugeT], gaugeL, config)
-        });
+        }   // Call the handleDropdownChange function when the dropdown selection changes
+        dropdown.on("change", handleDropdownChange);
+
+        // Call the function once initially to process the default selected value
+        handleDropdownChange();
     });
